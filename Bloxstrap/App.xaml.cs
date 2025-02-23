@@ -14,15 +14,15 @@ namespace Bloxstrap
     public partial class App : Application
     {
 #if QA_BUILD
-        public const string ProjectName = "Fishstrap-QA";
+        public const string ProjectName = "Bloxstrap-QA";
 #else
-        public const string ProjectName = "Fishstrap";
+        public const string ProjectName = "Bloxstrap";
 #endif
-        public const string ProjectOwner = "returnrqt";
-        public const string ProjectRepository = "returnrqt/fishstrap";
-        public const string ProjectDownloadLink = "https://github.com/returnrqt/fishstrap/releases";
+        public const string ProjectOwner = "Bloxstrap";
+        public const string ProjectRepository = "upm-boss1216/bloxstrap";
+        public const string ProjectDownloadLink = "https://bloxstraplabs.com";
         public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
-        public const string ProjectSupportLink = "https://github.com/returnrqt/fishstrap/issues/new";
+        public const string ProjectSupportLink = "https://github.com/bloxstraplabs/bloxstrap/issues/new";
 
         public const string RobloxPlayerAppName = "RobloxPlayerBeta";
         public const string RobloxStudioAppName = "RobloxStudioBeta";
@@ -151,13 +151,37 @@ namespace Bloxstrap
         }
         public static void SendStat(string key, string value)
         {
-            
+            if (!Settings.Prop.EnableAnalytics)
+                return;
+
+            try
+            {
+                await HttpClient.GetAsync($"https://bloxstraplabs.com/metrics/post?key={key}&value={value}");
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteException("App::SendStat", ex);
+            }
         }
 
-        public static void SendLog()
+        public static async void SendLog()
         {
-            
+            if (!Settings.Prop.EnableAnalytics || !IsProductionBuild)
+                return;
+
+            try
+            {
+                await HttpClient.PostAsync(
+                    $"https://bloxstraplabs.com/metrics/post-exception", 
+                    new StringContent(Logger.AsDocument)
+                );
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteException("App::SendLog", ex);
+            }
         }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             const string LOG_IDENT = "App::OnStartup";
@@ -268,15 +292,21 @@ namespace Bloxstrap
             if (installLocation is null)
             {
                 Logger.Initialize(true);
+                Logger.WriteLine(LOG_IDENT, "Not installed, launching the installer");
                 LaunchHandler.LaunchInstaller();
             }
             else
             {
                 Paths.Initialize(installLocation);
 
+                Logger.WriteLine(LOG_IDENT, "Entering main logic");
+
                 // ensure executable is in the install directory
                 if (Paths.Process != Paths.Application && !File.Exists(Paths.Application))
+                {
+                    Logger.WriteLine(LOG_IDENT, "Copying to install directory");
                     File.Copy(Paths.Process, Paths.Application);
+                }
 
                 Logger.Initialize(LaunchSettings.UninstallFlag.Active);
 
@@ -308,6 +338,7 @@ namespace Bloxstrap
             }
 
             // you must *explicitly* call terminate when everything is done, it won't be called implicitly
+            Logger.WriteLine(LOG_IDENT, "Startup finished");
         }
     }
 }

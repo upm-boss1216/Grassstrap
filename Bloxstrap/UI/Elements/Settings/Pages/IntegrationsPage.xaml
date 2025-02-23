@@ -73,6 +73,31 @@
             <ui:ToggleSwitch IsChecked="{Binding DiscordAccountOnProfile, Mode=TwoWay}" />
         </controls:OptionControl>
 
+        <TextBlock Text="{x:Static resources:Strings.Common_WindowMovement}" FontSize="20" FontWeight="Medium" Margin="0,16,0,0" />
+        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+        <controls:OptionControl 
+            Header="{x:Static resources:Strings.Menu_Integrations_GameWindowControl_Title}" 
+            Description="{x:Static resources:Strings.Menu_Integrations_GameWindowControl_Description}"
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}"
+            x:Name="GameWindowControlOption">
+            <ui:ToggleSwitch IsChecked="{Binding GameWindowControlEnabled, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="{x:Static resources:Strings.Menu_Integrations_GameWindowTitleControl_Title}" 
+            Description="{x:Static resources:Strings.Menu_Integrations_GameWindowTitleControl_Description}"
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}"
+            x:Name="GameWindowTitleControlOption">
+            <ui:ToggleSwitch IsChecked="{Binding GameWindowTitleControlEnabled, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="{x:Static resources:Strings.Menu_Integrations_GameWindowLogFPS_Title}" 
+            Description="{x:Static resources:Strings.Menu_Integrations_GameWindowLogFPS_Description}">
+            <ui:TextBox Margin="5,0,0,0" Padding="10,5,10,5" Width="150" Text="{Binding GameWindowLogFPSInterval, Mode=TwoWay}" PreviewTextInput="ValidateInt32" />
+        </controls:OptionControl>
+
         <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_Custom_Title}" FontSize="20" FontWeight="Medium" Margin="0,16,0,0" />
         <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_Custom_Description}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         <Grid Margin="0,8,0,0">
