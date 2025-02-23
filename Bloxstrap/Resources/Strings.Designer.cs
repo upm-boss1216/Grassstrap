@@ -1062,7 +1062,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thank you for using Bloxshade with Fishstrap.
+        ///   Looks up a localized string similar to Thank you for using Bloxshade with Bloxstrap.
         /// </summary>
         public static string Dialog_Bloxshade_ThankYou {
             get {
@@ -2319,7 +2319,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fishstrap will automatically check and update itself when launching Roblox..
+        ///   Looks up a localized string similar to Bloxstrap will automatically check and update itself when launching Roblox..
         /// </summary>
         public static string Menu_Behaviour_AutoUpdate_Description {
             get {
@@ -2518,7 +2518,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change deployment and installation settings for Roblox &amp; Fishstrap..
+        ///   Looks up a localized string similar to Change deployment and installation settings for Roblox &amp; Bloxstrap..
         /// </summary>
         public static string Menu_Channel_Description {
             get {
@@ -2563,7 +2563,25 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force Fishstrap to download version from specific hash. Please do not change if you have no idea what this does..
+        ///   Looks up a localized string similar to Fetching latest deploy info, please wait....
+        /// </summary>
+        public static string Menu_Channel_Switcher_Fetching {
+            get {
+                return ResourceManager.GetString("Menu.Channel.Switcher.Fetching", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified channel either doesn&apos;t exist or is private.
+        /// </summary>
+        public static string Menu_Channel_Switcher_Unauthroized {
+            get {
+                return ResourceManager.GetString("Menu.Channel.Switcher.Unauthroized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force Bloxstrap to download version from specific hash. Please do not change if you have no idea what this does..
         /// </summary>
         public static string Menu_Channel_VersionHash_Desription {
             get {

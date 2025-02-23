@@ -1,37 +1,37 @@
 {
   "profiles": {
-    "Fishstrap (Launch)": {
+    "Bloxstrap (Launch)": {
       "commandName": "Project"
     },
-    "Fishstrap (Quiet Launch)": {
+    "Bloxstrap (Quiet Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-quiet"
     },
-    "Fishstrap (Uninstall)": {
+    "Bloxstrap (Uninstall)": {
       "commandName": "Project",
       "commandLineArgs": "-uninstall"
     },
-    "Fishstrap (Quiet Uninstall)": {
+    "Bloxstrap (Quiet Uninstall)": {
       "commandName": "Project",
       "commandLineArgs": "-uninstall -quiet"
     },
-    "Fishstrap (Menu)": {
+    "Bloxstrap (Menu)": {
       "commandName": "Project",
       "commandLineArgs": "-menu"
     },
-    "Fishstrap (Deeplink)": {
+    "Bloxstrap (Deeplink)": {
       "commandName": "Project",
       "commandLineArgs": "-player \"roblox://experiences/start?placeId=13700835620\""
     },
-    "Fishstrap (Studio Launch)": {
+    "Bloxstrap (Studio Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-studio"
     },
-    "Fishstrap (Watcher)": {
+    "Bloxstrap (Watcher)": {
       "commandName": "Project",
       "commandLineArgs": "-watcher"
     },
-    "Fishstrap (Bloxshade)": {
+    "Bloxstrap (Bloxshade)": {
       "commandName": "Project",
       "commandLineArgs": "-bloxshade"
     }
