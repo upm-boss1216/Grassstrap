@@ -1,4 +1,4 @@
-﻿﻿using Bloxstrap.UI.Elements.Bootstrapper;
+﻿using Bloxstrap.UI.Elements.Bootstrapper;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;

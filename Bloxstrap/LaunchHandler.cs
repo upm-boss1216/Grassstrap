@@ -284,7 +284,7 @@ namespace Bloxstrap
                     string ProcessName = "RobloxPlayerBeta";
                     if (App.Settings.Prop.RenameClientToEuroTrucks2)
                         ProcessName = "eurotrucks2"; // ansel supports
-                    App.Logger.WriteLine(LOG_IDENT, $"Resolved Roblox name \"{ProcessName}\".exe, running Bloxstrap in background.");
+                    App.Logger.WriteLine(LOG_IDENT, $"Resolved Roblox name \"{ProcessName}\".exe, running Fishstrap in background.");
 
                     // now yield until the processes are closed
                     while (Process.GetProcessesByName(ProcessName).Any())
@@ -344,7 +344,7 @@ namespace Bloxstrap
             App.State.Prop.ShowBloxshadeWarning = true;
             App.State.Save();
 
-            App.Logger.WriteLine(LOG_IDENT, "Showing unsupported warning");
+            App.Logger.WriteLine(LOG_IDENT, "Ansel setting has been set to true");
 
             new BloxshadeDialog().ShowDialog();
             App.SoftTerminate();

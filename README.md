@@ -1,15 +1,10 @@
-> [!CAUTION]
-> The only official places to download Fishstrap are this GitHub repository and [fishstrap.app](https://www.fishstrap.app). Any other websites offering downloads or claiming to be us are not controlled by us.
+
 
 
 <p align="center">
     <img src="https://github.com/returnrqt/bloxstrap/raw/main/Images/Bloxstrap-full-dark.png#gh-dark-mode-only" width="420">
     <img src="https://github.com/returnrqt/bloxstrap/raw/main/Images/Bloxstrap-full-light.png#gh-light-mode-only" width="420">
 </p>
-
-<p align="center">
-    <img src="https://fishstrap.app/img/Showcase.png"/>
-<p>
 
 <div align="center">
 
@@ -25,7 +20,7 @@
 
 Fishstrap is a Bloxstrap fork aiming to enhance some of the features.
 
-Found any bugs? Submit an [issue](https://github.com/returnrqt/bloxstrap/issues) or create bug report in our [discord server](https://discord.gg/SRs5zb9BJd).
+Found any bugs? Submit an [issue](https://github.com/returnrqt/bloxstrap/issues) or create bug report in our [discord server](https://discord.gg/xSsamjAU84).
 
 ## Differences from Bloxstrap
 - Integrations
@@ -50,6 +45,14 @@ Found any bugs? Submit an [issue](https://github.com/returnrqt/bloxstrap/issues)
     - Custom bootstrapper themes
  
  *More changes coming soon!*
+ 
+## Screenshots
+<p align="center">
+    <img src="https://i.imgur.com/nUnjTTg.png"/>
+    <img src="https://i.imgur.com/s7nechI.png"/>
+    <img src="https://i.imgur.com/ZZdsQmJ.png"/>
+<p>
+
 ----
 ### Considering a switch? [Download it here](https://github.com/returnrqt/bloxstrap/releases).
 

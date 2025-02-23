@@ -1,4 +1,4 @@
-﻿﻿using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Xml;
 
 using ICSharpCode.AvalonEdit.CodeCompletion;
