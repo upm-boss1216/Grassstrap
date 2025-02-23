@@ -151,37 +151,13 @@ namespace Bloxstrap
         }
         public static void SendStat(string key, string value)
         {
-            if (!Settings.Prop.EnableAnalytics)
-                return;
-
-            try
-            {
-                await HttpClient.GetAsync($"https://bloxstraplabs.com/metrics/post?key={key}&value={value}");
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteException("App::SendStat", ex);
-            }
+            
         }
 
-        public static async void SendLog()
+        public static void SendLog()
         {
-            if (!Settings.Prop.EnableAnalytics || !IsProductionBuild)
-                return;
-
-            try
-            {
-                await HttpClient.PostAsync(
-                    $"https://bloxstraplabs.com/metrics/post-exception", 
-                    new StringContent(Logger.AsDocument)
-                );
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteException("App::SendLog", ex);
-            }
+            
         }
-
         protected override void OnStartup(StartupEventArgs e)
         {
             const string LOG_IDENT = "App::OnStartup";
