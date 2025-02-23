@@ -542,6 +542,15 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        public static string Common_Message {
+            get {
+                return ResourceManager.GetString("Common.Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Miscellaneous.
         /// </summary>
         public static string Common_Miscellaneous {
@@ -3587,6 +3596,15 @@ namespace Bloxstrap.Resources {
         public static string Menu_Integrations_Title {
             get {
                 return ResourceManager.GetString("Menu.Integrations.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load.
+        /// </summary>
+        public static string Menu_Load {
+            get {
+                return ResourceManager.GetString("Menu.Load", resourceCulture);
             }
         }
         
