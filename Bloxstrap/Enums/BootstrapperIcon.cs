@@ -4,7 +4,7 @@
     {
         [EnumName(StaticName = "Fishstrap")] //ermmmm it goes unused as of rn
         IconFishstrap,
-        [EnumName(StaticName = "Fishstrap")]
+        [EnumName(StaticName = "Bloxstrap")]
         IconBloxstrap,
         [EnumName(StaticName = "2008")]
         Icon2008,
