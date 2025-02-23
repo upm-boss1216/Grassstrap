@@ -41,10 +41,10 @@ namespace Bloxstrap
             // Rendering engines
             { "Rendering.Mode.DisableD3D11", "FFlagDebugGraphicsDisableDirect3D11" },
             { "Rendering.Mode.D3D11", "FFlagDebugGraphicsPreferD3D11" },
+            { "Rendering.Mode.D3D10", "FFlagDebugGraphicsPreferD3D11FL10" },
             { "Rendering.Mode.Vulkan", "FFlagDebugGraphicsPreferVulkan" },
             { "Rendering.Mode.OpenGL", "FFlagDebugGraphicsPreferOpenGL" },
-            { "Rendering.Mode.D3D10", "FFlagDebugGraphicsPreferD3D11FL10" },
-            { "Rendering.FixHighlights", "FFlagHighlightOutlinesOnMobile"},
+            { "Rendering.FixHighlights", "FFlagHighlightOutlinesOnMobile "},
 
             // Preferred GPU
             { "Rendering.PreferredGPU", "FStringDebugGraphicsPreferredGPUName"},
@@ -53,7 +53,8 @@ namespace Bloxstrap
             { "Rendering.Lighting.Voxel", "DFFlagDebugRenderForceTechnologyVoxel" },
             { "Rendering.Lighting.ShadowMap", "FFlagDebugForceFutureIsBrightPhase2" },
             { "Rendering.Lighting.Future", "FFlagDebugForceFutureIsBrightPhase3" },
-
+            { "Rendering.Lighting.Unified", "FFlagRenderUnifiedLighting12" },
+            
             // Texture quality
             { "Rendering.TextureQuality.OverrideEnabled", "DFFlagTextureQualityOverrideEnabled" },
             { "Rendering.TextureQuality.Level", "DFIntTextureQualityOverride" },
@@ -103,10 +104,10 @@ namespace Bloxstrap
         public static IReadOnlyDictionary<RenderingMode, string> RenderingModes => new Dictionary<RenderingMode, string>
         {
             { RenderingMode.Default, "None" },
-            { RenderingMode.Vulkan, "Vulkan" },
-            { RenderingMode.OpenGL, "OpenGL" },
             { RenderingMode.D3D11, "D3D11" },
             { RenderingMode.D3D10, "D3D10" },
+            { RenderingMode.Vulkan, "Vulkan" },
+            { RenderingMode.OpenGL, "OpenGL" },
         };
 
         public static IReadOnlyDictionary<LightingMode, string> LightingModes => new Dictionary<LightingMode, string>
@@ -114,7 +115,8 @@ namespace Bloxstrap
             { LightingMode.Default, "None" },
             { LightingMode.Voxel, "Voxel" },
             { LightingMode.ShadowMap, "ShadowMap" },
-            { LightingMode.Future, "Future" }
+            { LightingMode.Future, "Future" },
+            { LightingMode.Unified, "Unified" },
         };
 
         public static IReadOnlyDictionary<MSAAMode, string?> MSAAModes => new Dictionary<MSAAMode, string?>
