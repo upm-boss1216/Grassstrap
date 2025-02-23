@@ -310,6 +310,8 @@ namespace Bloxstrap
             // clone the dictionary
             OriginalProp = new(Prop);
 
+            // todo: tracking settings?
+
             // fflag for detecting if bloxstrap is being used (may remove later)
             SetPreset("Bloxstrap", allowDetection ? true : null);
 

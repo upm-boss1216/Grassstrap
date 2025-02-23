@@ -16,10 +16,11 @@ namespace Bloxstrap
 
         public readonly DiscordRichPresence? RichPresence;
 
+        public readonly WindowController? WindowController;
+
         public Watcher()
         {
             const string LOG_IDENT = "Watcher";
-
 
             if (!_lock.IsAcquired)
             {
@@ -67,6 +68,9 @@ namespace Bloxstrap
                     App.Logger.WriteLine(LOG_IDENT, "Running rpc");
                     RichPresence = new(ActivityWatcher);
                 }
+                
+                if (App.Settings.Prop.CanGameMoveWindow || App.Settings.Prop.CanGameSetWindowTitle) 
+                    WindowController = new(ActivityWatcher);
             }
 
             _notifyIcon = new(this);
@@ -130,6 +134,7 @@ namespace Bloxstrap
             RichPresence?.Dispose();
 
             App.State.Prop.WatcherRunning = false;
+            WindowController?.Dispose();
 
             GC.SuppressFinalize(this);
         }
