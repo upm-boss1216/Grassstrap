@@ -1343,7 +1343,7 @@ Please close any applications that may be using Roblox's files, and relaunch.</v
     <value />
   </data>
   <data name="Menu.Channel.Description" xml:space="preserve">
-    <value>Change deployment and installation settings for Roblox &amp; Fishstrap.</value>
+    <value>Change deployment and installation settings for Roblox &amp; Bloxstrap.</value>
   </data>
   <data name="Common.Channel" xml:space="preserve">
     <value>Channel</value>
@@ -1457,7 +1457,7 @@ Please close any applications that may be using Roblox's files, and relaunch.</v
     <value>Version hash</value>
   </data>
   <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
-    <value>Force Fishstrap to download version from specific hash. Please do not change if you have no idea what this does.</value>
+    <value>Force Bloxstrap to download version from specific hash. Please do not change if you have no idea what this does.</value>
   </data>
   <data name="Menu.SaveAndLaunch" xml:space="preserve">
     <value>Save and Launch</value>
@@ -1495,7 +1495,7 @@ Please close any applications that may be using Roblox's files, and relaunch.</v
     <value>Ansel support is required for shaders.</value>
   </data>
   <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
-    <value>Thank you for using Bloxshade with Fishstrap</value>
+    <value>Thank you for using Bloxshade with Bloxstrap</value>
   </data>
   <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
     <value>Ansel support has been enabled</value>
