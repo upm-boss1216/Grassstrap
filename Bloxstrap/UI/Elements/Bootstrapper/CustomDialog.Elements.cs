@@ -8,7 +8,6 @@ using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using System.Windows.Media.Animation;
-using System.Windows.Rect;
 
 using Wpf.Ui.Markup;
 using Wpf.Ui.Appearance;
@@ -156,11 +155,11 @@ namespace Bloxstrap.UI.Elements.Bootstrapper
 
             var viewbox = GetRectFromXElement(xmlElement, "Viewbox");
             if (viewbox is Rect)
-                imageBrush.Viewbox = (Rect)viewbox;
+                imageBrush.Viewbox = (System.Windows.Rect)viewbox;
 
             var viewport = GetRectFromXElement(xmlElement, "Viewport");
             if (viewport is Rect)
-                imageBrush.Viewport = (Rect)viewport;
+                imageBrush.Viewport = (System.Windows.Rect)viewport;
 
             var sourceData = GetImageSourceData(dialog, "ImageSource", xmlElement);
 
