@@ -347,7 +347,7 @@ namespace Bloxstrap
             App.State.Prop.ShowBloxshadeWarning = true;
             App.State.Save();
 
-            App.Logger.WriteLine(LOG_IDENT, "Showing unsupported warning");
+            App.Logger.WriteLine(LOG_IDENT, "Ansel setting has been set to true");
 
             new BloxshadeDialog().ShowDialog();
             App.SoftTerminate();
