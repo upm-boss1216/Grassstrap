@@ -12,6 +12,7 @@ namespace Bloxstrap
 
         public override string ProfilesLocation => Path.Combine(Paths.Base, "Profiles");
 
+        public bool allowDetection = true;
         public override string FileLocation => Path.Combine(Paths.Modifications, "ClientSettings\\ClientAppSettings.json");
 
         public bool Changed => !OriginalProp.SequenceEqual(Prop);
@@ -22,6 +23,11 @@ namespace Bloxstrap
             { "Network.Log", "FLogNetwork" },
             { "Players.LogLevel", "FStringDebugLuaLogLevel" },
             { "Players.LogPattern", "FStringDebugLuaLogPattern" },
+
+
+            // Adrigamer278
+            { "Bloxstrap", "FFlagUserIsBloxstrap"},
+            { "WindowMovement", "FFlagUserAllowsWindowMovement"},
 
             // Debug
             { "Debug.FlagState", "FStringDebugShowFlagState"},
@@ -38,9 +44,9 @@ namespace Bloxstrap
             // Rendering engines
             { "Rendering.Mode.DisableD3D11", "FFlagDebugGraphicsDisableDirect3D11" },
             { "Rendering.Mode.D3D11", "FFlagDebugGraphicsPreferD3D11" },
+            { "Rendering.Mode.D3D10", "FFlagDebugGraphicsPreferD3D11FL10" },
             { "Rendering.Mode.Vulkan", "FFlagDebugGraphicsPreferVulkan" },
             { "Rendering.Mode.OpenGL", "FFlagDebugGraphicsPreferOpenGL" },
-            { "Rendering.Mode.D3D10", "FFlagDebugGraphicsPreferD3D11FL10" },
             { "Rendering.FixHighlights", "FFlagHighlightOutlinesOnMobile"},
 
             // Preferred GPU
@@ -50,6 +56,7 @@ namespace Bloxstrap
             { "Rendering.Lighting.Voxel", "DFFlagDebugRenderForceTechnologyVoxel" },
             { "Rendering.Lighting.ShadowMap", "FFlagDebugForceFutureIsBrightPhase2" },
             { "Rendering.Lighting.Future", "FFlagDebugForceFutureIsBrightPhase3" },
+            { "Rendering.Lighting.Unified", "FFlagRenderUnifiedLighting12" },
 
             // Texture quality
             { "Rendering.TextureQuality.OverrideEnabled", "DFFlagTextureQualityOverrideEnabled" },
@@ -100,10 +107,10 @@ namespace Bloxstrap
         public static IReadOnlyDictionary<RenderingMode, string> RenderingModes => new Dictionary<RenderingMode, string>
         {
             { RenderingMode.Default, "None" },
-            { RenderingMode.Vulkan, "Vulkan" },
-            { RenderingMode.OpenGL, "OpenGL" },
             { RenderingMode.D3D11, "D3D11" },
             { RenderingMode.D3D10, "D3D10" },
+            { RenderingMode.Vulkan, "Vulkan" },
+            { RenderingMode.OpenGL, "OpenGL" },
         };
 
         public static IReadOnlyDictionary<LightingMode, string> LightingModes => new Dictionary<LightingMode, string>
@@ -111,7 +118,8 @@ namespace Bloxstrap
             { LightingMode.Default, "None" },
             { LightingMode.Voxel, "Voxel" },
             { LightingMode.ShadowMap, "ShadowMap" },
-            { LightingMode.Future, "Future" }
+            { LightingMode.Future, "Future" },
+            { LightingMode.Unified, "Unified" },
         };
 
         public static IReadOnlyDictionary<MSAAMode, string?> MSAAModes => new Dictionary<MSAAMode, string?>
@@ -301,6 +309,12 @@ namespace Bloxstrap
 
             // clone the dictionary
             OriginalProp = new(Prop);
+
+            // fflag for detecting if bloxstrap is being used (may remove later)
+            SetPreset("Bloxstrap", allowDetection ? true : null);
+
+            // fflag for detecting if window movement is allowed in order to prevent log bloat when disabled
+            SetPreset("WindowMovement", (App.Settings.Prop.CanGameMoveWindow & allowDetection) ? true : null);
 
             if (GetPreset("Network.Log") != "7")
                 SetPreset("Network.Log", "7");
