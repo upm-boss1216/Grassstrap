@@ -44,6 +44,7 @@
         public event EventHandler<Message>? OnRPCMessage;
 
         private DateTime LastRPCRequest;
+        private readonly Dictionary<string, string> GeolocationCache = new();
 
         public string LogLocation = null!;
 
@@ -59,6 +60,9 @@
         public Dictionary<int, ActivityData.UserMessage> MessageLogs => Data.MessageLogs;
 
         public bool IsDisposed = false;
+
+        public int delay = 250;
+        public int windowLogDelay = 250;
 
         public ActivityWatcher(string? logFile = null)
         {
@@ -80,8 +84,19 @@
             // - check for leaves/disconnects with 'Time to disconnect replication data: {{TIME}}' entry
             //
             // we'll tail the log file continuously, monitoring for any log entries that we need to determine the current game activity
+
+            delay = 250;
+
+            windowLogDelay = 1000/Math.Min(
+                App.Settings.Prop.WindowLogReadFPS<1 ? 1 : App.Settings.Prop.WindowLogReadFPS,
+                int.TryParse(App.FastFlags.GetPreset("Rendering.Framerate"), out int fpsUsed) ? fpsUsed : 60); // maybe remove this one since it can be changed in runtime now
+
+            if (App.Settings.Prop.CanGameMoveWindow) // so window can move each frame
+                delay = windowLogDelay; //todo: make it not start like this (that's why its a public var)
             
             FileInfo logFileInfo;
+
+            string logDirectory = Path.Combine(Paths.LocalAppData, "Roblox\\logs");
 
             if (String.IsNullOrEmpty(LogLocation))
             {
@@ -124,6 +139,15 @@
 
             App.Logger.WriteLine(LOG_IDENT, $"Opened {LogLocation}");
 
+            var logUpdatedEvent = new AutoResetEvent(false);
+            var logWatcher = new FileSystemWatcher()
+            {
+                Path = logDirectory,
+                Filter = Path.GetFileName(logFileInfo.FullName),
+                EnableRaisingEvents = true
+            };
+            logWatcher.Changed += (s, e) => logUpdatedEvent.Set();
+
             using var streamReader = new StreamReader(logFileStream);
 
             while (!IsDisposed)
@@ -131,7 +155,7 @@
                 string? log = await streamReader.ReadLineAsync();
 
                 if (log is null)
-                    await Task.Delay(1000);
+                    await Task.Delay(delay);
                 else
                     ReadLogEntry(log);
             }
@@ -145,12 +169,14 @@
 
             _logEntriesRead += 1;
 
+#if DEBUG
             // debug stats to ensure that the log reader is working correctly
             // if more than 1000 log entries have been read, only log per 100 to save on spam
             if (_logEntriesRead <= 1000 && _logEntriesRead % 50 == 0)
                 App.Logger.WriteLine(LOG_IDENT, $"Read {_logEntriesRead} log entries");
             else if (_logEntriesRead % 100 == 0)
                 App.Logger.WriteLine(LOG_IDENT, $"Read {_logEntriesRead} log entries");
+#endif
 
             if (entry.Contains(GameLeavingEntry))
             {
@@ -351,6 +377,11 @@
                     {
                         App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (Command is empty)");
                         return;
+                    }
+
+                    // window stuff doesnt log
+                    if (!message.Command.Contains("Window")) {
+                        App.Logger.WriteLine(LOG_IDENT, $"Received message: '{messagePlain}'");
                     }
 
                     if (message.Command == "SetLaunchData")
