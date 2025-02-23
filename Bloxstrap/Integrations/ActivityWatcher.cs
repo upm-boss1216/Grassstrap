@@ -96,8 +96,6 @@
             
             FileInfo logFileInfo;
 
-            string logDirectory = Path.Combine(Paths.LocalAppData, "Roblox\\logs");
-
             if (String.IsNullOrEmpty(LogLocation))
             {
                 string logDirectory = Path.Combine(Paths.LocalAppData, "Roblox\\logs");
