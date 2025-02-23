@@ -96,10 +96,10 @@
             
             FileInfo logFileInfo;
 
+            string logDirectory = Path.Combine(Paths.LocalAppData, "Roblox\\logs");
+
             if (String.IsNullOrEmpty(LogLocation))
             {
-                string logDirectory = Path.Combine(Paths.LocalAppData, "Roblox\\logs");
-
                 if (!Directory.Exists(logDirectory))
                     return;
 
@@ -136,6 +136,15 @@
             var logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
             App.Logger.WriteLine(LOG_IDENT, $"Opened {LogLocation}");
+
+            var logUpdatedEvent = new AutoResetEvent(false);
+            var logWatcher = new FileSystemWatcher()
+            {
+                Path = logDirectory,
+                Filter = Path.GetFileName(logFileInfo.FullName),
+                EnableRaisingEvents = true
+            };
+            logWatcher.Changed += (s, e) => logUpdatedEvent.Set();
 
             using var streamReader = new StreamReader(logFileStream);
 
