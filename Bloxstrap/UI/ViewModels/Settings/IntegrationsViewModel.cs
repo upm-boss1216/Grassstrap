@@ -74,11 +74,15 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     ShowServerDetailsEnabled = value;
                     DisableAppPatchEnabled = value;
                     DiscordActivityEnabled = value;
+                    GameWindowControlEnabled = value;
+                    GameWindowTitleControlEnabled = value;
                     DiscordActivityJoinEnabled = value;
 
                     OnPropertyChanged(nameof(ShowServerDetailsEnabled));
                     OnPropertyChanged(nameof(DisableAppPatchEnabled));
                     OnPropertyChanged(nameof(DiscordActivityEnabled));
+                    OnPropertyChanged(nameof(GameWindowControlEnabled));
+                    OnPropertyChanged(nameof(GameWindowTitleControlEnabled));
                     OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
                 }
             }
@@ -114,6 +118,24 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(DiscordAccountOnProfile));
                 }
             }
+        }
+
+        public bool GameWindowControlEnabled
+        {
+            get => App.Settings.Prop.CanGameMoveWindow;
+            set => App.Settings.Prop.CanGameMoveWindow = value;
+        }
+
+        public int GameWindowLogFPSInterval
+        {
+            get => App.Settings.Prop.WindowLogReadFPS;
+            set => App.Settings.Prop.WindowLogReadFPS = value;
+        }
+
+        public bool GameWindowTitleControlEnabled
+        {
+            get => App.Settings.Prop.CanGameSetWindowTitle;
+            set => App.Settings.Prop.CanGameSetWindowTitle = value;
         }
 
         public bool DiscordActivityJoinEnabled
