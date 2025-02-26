@@ -61,6 +61,15 @@ namespace Bloxstrap.Integrations
         private int _startingWidth = 0;
         private int _startingHeight = 0;
 
+        private const int SW_MAXIMIZE = 3;
+        private const int SW_MINIMIZE = 6;
+        private const int SW_RESTORE = 9;
+
+        private const uint MB_OK = (uint) 0x00000000L;
+
+        private string _lastPopupTitle = "";
+        private int? _messagePopup;
+
         private Theme appTheme = Theme.Default;
 
         public WindowController(ActivityWatcher activityWatcher)
@@ -73,7 +82,7 @@ namespace Bloxstrap.Integrations
             _lastSCHeight = defaultScreenHeight;
 
             // try to find window
-            _currentWindow = FindWindow("Roblox");
+            _currentWindow = _FindWindow("Roblox");
             _foundWindow = !(_currentWindow == (IntPtr)0);
 
             if (_foundWindow) { onWindowFound(); }
@@ -158,6 +167,21 @@ namespace Bloxstrap.Integrations
                 MoveWindow(_currentWindow,_startingX,_startingY,_startingWidth,_startingHeight,false);
                 SetWindowLong(_currentWindow, -20, 0x00000000);
 
+            if (_messagePopup is not null) {
+                IntPtr _popupHandle = FindWindow(null, _lastPopupTitle);
+                bool _foundPopup = !(_popupHandle == (IntPtr)0);
+
+                if (_foundPopup) {
+                    CloseWindow(_popupHandle);
+                }
+
+                _messagePopup = null;
+            }
+
+            MoveWindow(_currentWindow,_startingX,_startingY,_startingWidth,_startingHeight,false);
+            SetWindowLong(_currentWindow, -20, 0x00000000);
+            ShowWindow(_currentWindow, SW_MAXIMIZE);
+
                 changedWindow = false;
             }
             
@@ -182,7 +206,7 @@ namespace Bloxstrap.Integrations
             const string LOG_IDENT = "WindowController::OnMessage";
             // try to find window now
             if (!_foundWindow) {
-                _currentWindow = FindWindow("Roblox");
+                _currentWindow = _FindWindow("Roblox");
                 _foundWindow = !(_currentWindow == (IntPtr)0);
 
                 if (_foundWindow) { onWindowFound(); }
@@ -193,15 +217,6 @@ namespace Bloxstrap.Integrations
             // NOTE: if a command has multiple aliases, use the first one that shows up, the others are just for compatibility and may be removed in the future
             switch(message.Command)
             {
-                case "RequestPermission": {
-                    // create a thread 
-                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate{
-                        var dialog = new WindowControlPermission(_activityWatcher);
-                        dialog.ShowDialog();
-                        dialog.Activate();
-                    });
-                    break;
-                }
                 case "InitWindow": {
                     _activityWatcher.delay = _activityWatcher.windowLogDelay;
                     saveWindow();
@@ -219,7 +234,6 @@ namespace Bloxstrap.Integrations
                     break;
                 case "SetWindow": {
                     if (!App.Settings.Prop.CanGameMoveWindow) { break; }
-                    if (!App.Settings.Prop.WindowControlAllowedUniverses.Contains(_activityWatcher.Data.UniverseId)) { break; }
                     WindowMessage? windowData;
 
                     try
@@ -293,7 +307,6 @@ namespace Bloxstrap.Integrations
                 }
                 case "SetWindowTitle": case "SetTitle": {
                     if (!App.Settings.Prop.CanGameSetWindowTitle) {return;}
-                    if (!App.Settings.Prop.WindowControlAllowedUniverses.Contains(_activityWatcher.Data.UniverseId)) { break; }
 
                     WindowTitle? windowData;
                     try
@@ -322,7 +335,6 @@ namespace Bloxstrap.Integrations
                 }
                 case "SetWindowTransparency": {
                     if (!App.Settings.Prop.CanGameMoveWindow) {return;}
-                    if (!App.Settings.Prop.WindowControlAllowedUniverses.Contains(_activityWatcher.Data.UniverseId)) { break; }
                     WindowTransparency? windowData;
 
                     try
@@ -365,7 +377,6 @@ namespace Bloxstrap.Integrations
                 }
                 case "SetWindowColor": {
                     if (!App.Settings.Prop.CanGameChangeColor) {return;}
-                    if (!App.Settings.Prop.WindowControlAllowedUniverses.Contains(_activityWatcher.Data.UniverseId)) { break; }
                     WindowColor? windowData;
 
                     try
@@ -413,10 +424,9 @@ namespace Bloxstrap.Integrations
             GC.SuppressFinalize(this);
         }
 
-        private IntPtr FindWindow(string title)
+        private IntPtr _FindWindow(string title)
         {
-            Process[] tempProcesses;
-            tempProcesses = Process.GetProcesses();
+            Process[] tempProcesses = Process.GetProcesses();
             foreach (Process proc in tempProcesses)
             {
                 if (proc.MainWindowTitle == title)
