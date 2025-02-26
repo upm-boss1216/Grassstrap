@@ -98,6 +98,14 @@
             <ui:TextBox Margin="5,0,0,0" Padding="10,5,10,5" Width="150" Text="{Binding GameWindowLogFPSInterval, Mode=TwoWay}" PreviewTextInput="ValidateInt32" />
         </controls:OptionControl>
 
+                <controls:OptionControl 
+            Header="{x:Static resources:Strings.Menu_Integrations_GameColorControl_Title}" 
+            Description="{x:Static resources:Strings.Menu_Integrations_GameColorControl_Description}"
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}"
+            x:Name="GameWindowColorOption">
+            <ui:ToggleSwitch IsChecked="{Binding GameWindowColorEnabled, Mode=TwoWay}" />
+        </controls:OptionControl>
+
         <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_Custom_Title}" FontSize="20" FontWeight="Medium" Margin="0,16,0,0" />
         <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_Custom_Description}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         <Grid Margin="0,8,0,0">
