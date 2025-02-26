@@ -61,15 +61,6 @@ namespace Bloxstrap.Integrations
         private int _startingWidth = 0;
         private int _startingHeight = 0;
 
-        private const int SW_MAXIMIZE = 3;
-        private const int SW_MINIMIZE = 6;
-        private const int SW_RESTORE = 9;
-
-        private const uint MB_OK = (uint) 0x00000000L;
-
-        private string _lastPopupTitle = "";
-        private int? _messagePopup;
-
         private Theme appTheme = Theme.Default;
 
         public WindowController(ActivityWatcher activityWatcher)
@@ -166,21 +157,6 @@ namespace Bloxstrap.Integrations
                 // reset sets to defaults on the monitor it was found at the start
                 MoveWindow(_currentWindow,_startingX,_startingY,_startingWidth,_startingHeight,false);
                 SetWindowLong(_currentWindow, -20, 0x00000000);
-
-            if (_messagePopup is not null) {
-                IntPtr _popupHandle = FindWindow(null, _lastPopupTitle);
-                bool _foundPopup = !(_popupHandle == (IntPtr)0);
-
-                if (_foundPopup) {
-                    CloseWindow(_popupHandle);
-                }
-
-                _messagePopup = null;
-            }
-
-            MoveWindow(_currentWindow,_startingX,_startingY,_startingWidth,_startingHeight,false);
-            SetWindowLong(_currentWindow, -20, 0x00000000);
-            ShowWindow(_currentWindow, SW_MAXIMIZE);
 
                 changedWindow = false;
             }
