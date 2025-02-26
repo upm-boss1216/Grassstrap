@@ -1,6 +1,10 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Windows;
+using System.Drawing;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
+using System.Runtime.InteropServices;
 using Message = Bloxstrap.Models.BloxstrapRPC.Message;
+using Bloxstrap.UI.Elements.Dialogs;
 
 public struct Rect {
    public int Left { get; set; }
@@ -24,7 +28,7 @@ namespace Bloxstrap.Integrations
         private const int defaultScreenHeight = 720;
 
         // as a test :P
-        private const bool useAllMonitors = false;
+        //private const bool useAllMonitors = false;
 
         // extra monitors offsets
         public int monitorX = 0;
@@ -49,11 +53,24 @@ namespace Bloxstrap.Integrations
         private int _lastSCHeight = 0;
         private byte _lastTransparency = 1;
         private uint _lastWindowColor = 0x000000;
+        private uint _lastWindowCaptionColor = 0x000000;
+        private uint _lastWindowBorderColor = 0x000000;
 
         private int _startingX = 0;
         private int _startingY = 0;
         private int _startingWidth = 0;
         private int _startingHeight = 0;
+
+        private const int SW_MAXIMIZE = 3;
+        private const int SW_MINIMIZE = 6;
+        private const int SW_RESTORE = 9;
+
+        private const uint MB_OK = (uint) 0x00000000L;
+
+        private string _lastPopupTitle = "";
+        private int? _messagePopup;
+
+        private Theme appTheme = Theme.Default;
 
         public WindowController(ActivityWatcher activityWatcher)
         {
@@ -65,14 +82,14 @@ namespace Bloxstrap.Integrations
             _lastSCHeight = defaultScreenHeight;
 
             // try to find window
-            _currentWindow = FindWindow("Roblox");
+            _currentWindow = _FindWindow("Roblox");
             _foundWindow = !(_currentWindow == (IntPtr)0);
 
             if (_foundWindow) { onWindowFound(); }
         }
 
         public void updateWinMonitor() {
-            if (useAllMonitors) {
+            /*if (useAllMonitors) {
                 screenWidth = SystemInformation.VirtualScreen.Width;
                 screenHeight = SystemInformation.VirtualScreen.Height;
 
@@ -84,7 +101,7 @@ namespace Bloxstrap.Integrations
                 widthMult = primaryScreen.Bounds.Width/((float)screenWidth);
                 heightMult = primaryScreen.Bounds.Height/((float)screenHeight);
                 return;
-            }
+            }*/
             var curScreen = Screen.FromHandle(_currentWindow);
 
             screenWidth = curScreen.Bounds.Width;
@@ -101,6 +118,13 @@ namespace Bloxstrap.Integrations
 
             App.Logger.WriteLine(LOG_IDENT, $"Monitor X:{monitorX} Y:{monitorY} W:{screenWidth} H:{screenHeight}");
             App.Logger.WriteLine(LOG_IDENT, $"Window X:{_lastX} Y:{_lastY} W:{_lastWidth} H:{_lastHeight}");
+
+            appTheme = ThemeEx.GetFinal(App.Settings.Prop.Theme);
+            if (App.Settings.Prop.CanGameChangeColor && appTheme == Theme.Dark)
+            {
+                _lastWindowCaptionColor = Convert.ToUInt32("1F1F1F", 16);
+                DwmSetWindowAttribute(_currentWindow, 35, ref _lastWindowCaptionColor, sizeof(int));
+            }
         }
 
         public void stopWindow() {
@@ -141,28 +165,67 @@ namespace Bloxstrap.Integrations
                 MoveWindow(_currentWindow,_startingX,_startingY,_startingWidth,_startingHeight,false);
                 SetWindowLong(_currentWindow, -20, 0x00000000);
 
+            if (_messagePopup is not null) {
+                IntPtr _popupHandle = FindWindow(null, _lastPopupTitle);
+                bool _foundPopup = !(_popupHandle == (IntPtr)0);
+
+                if (_foundPopup) {
+                    CloseWindow(_popupHandle);
+                }
+
+                _messagePopup = null;
+            }
+
+            MoveWindow(_currentWindow,_startingX,_startingY,_startingWidth,_startingHeight,false);
+            SetWindowLong(_currentWindow, -20, 0x00000000);
+            ShowWindow(_currentWindow, SW_MAXIMIZE);
+
                 changedWindow = false;
             }
             
             SendMessage(_currentWindow, WM_SETTEXT, IntPtr.Zero, "Roblox");
+
+            //reset window color
+            if (App.Settings.Prop.CanGameChangeColor) {
+                _lastWindowCaptionColor = Convert.ToUInt32(appTheme == Theme.Dark ? "1F1F1F" : "FFFFFF", 16);
+                DwmSetWindowAttribute(_currentWindow, 35, ref _lastWindowCaptionColor, sizeof(int));
+                
+                _lastWindowBorderColor = Convert.ToUInt32("1F1F1F", 16);
+                DwmSetWindowAttribute(_currentWindow, 34, ref _lastWindowBorderColor, sizeof(int));
+            }
+        }
+
+        private List<System.Windows.Forms.Form> forms = new();
+        public void removeWindows() {
+            // TODO: Clear the list above!!
         }
 
         public void OnMessage(Message message) {
             const string LOG_IDENT = "WindowController::OnMessage";
-
             // try to find window now
             if (!_foundWindow) {
-                _currentWindow = FindWindow("Roblox");
+                _currentWindow = _FindWindow("Roblox");
                 _foundWindow = !(_currentWindow == (IntPtr)0);
 
-                if (_foundWindow) { onWindowFound(); }
+                if (_foundWindow) 
+                    onWindowFound(); 
             }
 
-            if (_currentWindow == (IntPtr)0) {return;}
+            if (_currentWindow == (IntPtr)0 ) 
+                return;
 
             // NOTE: if a command has multiple aliases, use the first one that shows up, the others are just for compatibility and may be removed in the future
             switch(message.Command)
             {
+                case "RequestPermission": {
+                    // create a thread 
+                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate{
+                        var dialog = new WindowControlPermission(_activityWatcher);
+                        dialog.ShowDialog();
+                        dialog.Activate();
+                    });
+                    break;
+                }
                 case "InitWindow": {
                     _activityWatcher.delay = _activityWatcher.windowLogDelay;
                     saveWindow();
@@ -180,7 +243,7 @@ namespace Bloxstrap.Integrations
                     break;
                 case "SetWindow": {
                     if (!App.Settings.Prop.CanGameMoveWindow) { break; }
-
+                    if (!App.Settings.Prop.WindowControlAllowedUniverses.Contains(_activityWatcher.Data.UniverseId)) { break; }
                     WindowMessage? windowData;
 
                     try
@@ -204,6 +267,11 @@ namespace Bloxstrap.Integrations
                         return;
                     }
 
+                    System.Windows.Forms.Form? targetForm = null;
+                    if (windowData.WindowID is not null && (int) windowData.WindowID >= 0) {
+                        targetForm = forms.ElementAt(new Index((int) windowData.WindowID));
+                    }
+
                     if (windowData.ScaleWidth is not null) {
                         _lastSCWidth = (int) windowData.ScaleWidth;
                     }
@@ -224,6 +292,12 @@ namespace Bloxstrap.Integrations
                         _lastHeight = (int) (windowData.Height * scaleY);
                     }
 
+                    if (targetForm is not null) {
+                        // TODO: Fix these?
+                        /*targetForm.Location = new System.Drawing.Point(_lastX, _lastY);
+                        targetForm.Size = new System.Drawing.Size(_lastWidth, _lastHeight);*/
+                    } else {
+
                     if (windowData.X is not null) {
                         var fakeWidthFix = (_lastWidth - _lastWidth*widthMult)/2;
                         _lastX = (int) (windowData.X * scaleX + fakeWidthFix);
@@ -236,11 +310,14 @@ namespace Bloxstrap.Integrations
 
                     changedWindow = true;
                     MoveWindow(_currentWindow,_lastX+monitorX,_lastY+monitorY,(int) (_lastWidth*widthMult),(int) (_lastHeight*heightMult),false);
+                        MoveWindow(_currentWindow,_lastX,_lastY,_lastWidth,_lastHeight,false);
+                    }
                     //App.Logger.WriteLine(LOG_IDENT, $"Updated Window Properties");
                     break;
                 }
                 case "SetWindowTitle": case "SetTitle": {
                     if (!App.Settings.Prop.CanGameSetWindowTitle) {return;}
+                    if (!App.Settings.Prop.WindowControlAllowedUniverses.Contains(_activityWatcher.Data.UniverseId)) { break; }
 
                     WindowTitle? windowData;
                     try
@@ -269,6 +346,7 @@ namespace Bloxstrap.Integrations
                 }
                 case "SetWindowTransparency": {
                     if (!App.Settings.Prop.CanGameMoveWindow) {return;}
+                    if (!App.Settings.Prop.WindowControlAllowedUniverses.Contains(_activityWatcher.Data.UniverseId)) { break; }
                     WindowTransparency? windowData;
 
                     try
@@ -309,6 +387,45 @@ namespace Bloxstrap.Integrations
 
                     break;
                 }
+                case "SetWindowColor": {
+                    if (!App.Settings.Prop.CanGameChangeColor) {return;}
+                    if (!App.Settings.Prop.WindowControlAllowedUniverses.Contains(_activityWatcher.Data.UniverseId)) { break; }
+                    WindowColor? windowData;
+
+                    try
+                    {
+                        windowData = message.Data.Deserialize<WindowColor>();
+                    }
+                    catch (Exception)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (JSON deserialization threw an exception)");
+                        return;
+                    }
+
+                    if (windowData is null)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Failed to parse message! (JSON deserialization returned null)");
+                        return;
+                    }
+
+                    if (windowData.Reset == true) {
+                        windowData.Caption = appTheme == Theme.Dark ? "1F1F1F" : "FFFFFF";
+                        windowData.Border = "1F1F1F";
+                        windowData.Reset = false;
+                    }
+
+                   if (windowData.Caption is not null) {
+                        _lastWindowCaptionColor = Convert.ToUInt32(windowData.Caption, 16);
+                        DwmSetWindowAttribute(_currentWindow, 35, ref _lastWindowCaptionColor, sizeof(int));
+                    }
+
+                    if (windowData.Border is not null) {
+                        _lastWindowBorderColor = Convert.ToUInt32(windowData.Border, 16);
+                        DwmSetWindowAttribute(_currentWindow, 34, ref _lastWindowBorderColor, sizeof(int));
+                    }
+
+                    break;
+                }
                 default: {
                     return;
                 }
@@ -320,10 +437,9 @@ namespace Bloxstrap.Integrations
             GC.SuppressFinalize(this);
         }
 
-        private IntPtr FindWindow(string title)
+        private IntPtr _FindWindow(string title)
         {
-            Process[] tempProcesses;
-            tempProcesses = Process.GetProcesses();
+            Process[] tempProcesses = Process.GetProcesses();
             foreach (Process proc in tempProcesses)
             {
                 if (proc.MainWindowTitle == title)
@@ -335,6 +451,15 @@ namespace Bloxstrap.Integrations
         }
 
         [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll")]
+        static extern int CloseWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        static extern int MessageBox(IntPtr hWnd, string lpText, string lpCaption, uint uType);
+
+        [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -342,11 +467,18 @@ namespace Bloxstrap.Integrations
 
         [DllImport("user32.dll")]
         public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
-
+        
         [DllImport("user32.dll")]
         static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         [DllImport("user32.dll")]
         static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hWnd, int dwAttribute, ref uint pvAttribute, int cbAttribute);
     }
 }
