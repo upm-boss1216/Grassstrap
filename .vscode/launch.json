@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "C#: Bloxstrap [Bloxstrap (Launch Client With Bootstrap)]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\Bloxstrap\\Bloxstrap.csproj",
+            "launchConfigurationId": "TargetFramework=;Bloxstrap (Launch)"
+        },
+        {
+            "name": "C#: Bloxstrap [Bloxstrap (Launch Client)]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\Bloxstrap\\Bloxstrap.csproj",
+            "launchConfigurationId": "TargetFramework=;Bloxstrap (Watcher)"
+        },
+        {
+            "name": "C#: Bloxstrap [Bloxstrap (Menu)]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\Bloxstrap\\Bloxstrap.csproj",
+            "launchConfigurationId": "TargetFramework=;Bloxstrap (Menu)"
+        },
+    ]
+}
