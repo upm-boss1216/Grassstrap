@@ -82,7 +82,7 @@ namespace Bloxstrap.Integrations
             _lastSCHeight = defaultScreenHeight;
 
             // try to find window
-            _currentWindow = _FindWindow("Roblox");
+            _currentWindow = FindWindow("Roblox");
             _foundWindow = !(_currentWindow == (IntPtr)0);
 
             if (_foundWindow) { onWindowFound(); }
@@ -103,7 +103,7 @@ namespace Bloxstrap.Integrations
                 heightMult = primaryScreen.Bounds.Height/((float)screenHeight);
                 return;
             }
-            #pragma warning disable CS0162 // Unreachable code detected
+            #pragma warning restore CS0162 // Unreachable code detected
             var curScreen = Screen.FromHandle(_currentWindow);
 
             screenWidth = curScreen.Bounds.Width;
@@ -206,15 +206,13 @@ namespace Bloxstrap.Integrations
             const string LOG_IDENT = "WindowController::OnMessage";
             // try to find window now
             if (!_foundWindow) {
-                _currentWindow = _FindWindow("Roblox");
+                _currentWindow = FindWindow("Roblox");
                 _foundWindow = !(_currentWindow == (IntPtr)0);
 
-                if (_foundWindow) 
-                    onWindowFound(); 
+                if (_foundWindow) { onWindowFound(); }
             }
 
-            if (_currentWindow == (IntPtr)0 ) 
-                return;
+            if (_currentWindow == (IntPtr)0) {return;}
 
             // NOTE: if a command has multiple aliases, use the first one that shows up, the others are just for compatibility and may be removed in the future
             switch(message.Command)
@@ -439,9 +437,10 @@ namespace Bloxstrap.Integrations
             GC.SuppressFinalize(this);
         }
 
-        private IntPtr _FindWindow(string title)
+        private IntPtr FindWindow(string title)
         {
-            Process[] tempProcesses = Process.GetProcesses();
+            Process[] tempProcesses;
+            tempProcesses = Process.GetProcesses();
             foreach (Process proc in tempProcesses)
             {
                 if (proc.MainWindowTitle == title)
