@@ -28,7 +28,7 @@ namespace Bloxstrap.Integrations
         private const int defaultScreenHeight = 720;
 
         // as a test :P
-        //private const bool useAllMonitors = false;
+        private const bool useAllMonitors = false;
 
         // extra monitors offsets
         public int monitorX = 0;
@@ -89,7 +89,8 @@ namespace Bloxstrap.Integrations
         }
 
         public void updateWinMonitor() {
-            /*if (useAllMonitors) {
+            #pragma warning disable CS0162 // Unreachable code detected
+            if (useAllMonitors) {
                 screenWidth = SystemInformation.VirtualScreen.Width;
                 screenHeight = SystemInformation.VirtualScreen.Height;
 
@@ -101,7 +102,8 @@ namespace Bloxstrap.Integrations
                 widthMult = primaryScreen.Bounds.Width/((float)screenWidth);
                 heightMult = primaryScreen.Bounds.Height/((float)screenHeight);
                 return;
-            }*/
+            }
+            #pragma warning disable CS0162 // Unreachable code detected
             var curScreen = Screen.FromHandle(_currentWindow);
 
             screenWidth = curScreen.Bounds.Width;
