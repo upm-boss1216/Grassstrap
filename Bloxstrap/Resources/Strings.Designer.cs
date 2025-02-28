@@ -2726,15 +2726,6 @@ namespace Bloxstrap.Resources {
                 return ResourceManager.GetString("Menu.FastFlagEditor.ExportJson.IncludePresets", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Would you like to include preset FFlags?.
-        /// </summary>
-        public static string Menu_FastFlagEditor_ExportJson_IncludePresets {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.ExportJson.IncludePresets", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The entry for &apos;{0}&apos; is not valid as the value must be a boolean (either &apos;True&apos; or &apos;False&apos;).
