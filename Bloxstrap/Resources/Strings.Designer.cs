@@ -2728,6 +2728,15 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Would you like to include preset FFlags?.
+        /// </summary>
+        public static string Menu_FastFlagEditor_ExportJson_IncludePresets {
+            get {
+                return ResourceManager.GetString("Menu.FastFlagEditor.ExportJson.IncludePresets", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The entry for &apos;{0}&apos; is not valid as the value must be a boolean (either &apos;True&apos; or &apos;False&apos;).
         /// </summary>
         public static string Menu_FastFlagEditor_InvalidBoolValue {
@@ -3149,6 +3158,15 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Removes FPS presets from the menu..
+        /// </summary>
+        public static string Menu_FastFlags_Presets_IngameMenu_Framerate_Description {
+            get {
+                return ResourceManager.GetString("Menu.FastFlags.Presets.IngameMenu.Framerate.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Framerate cap.
         /// </summary>
         public static string Menu_FastFlags_Presets_IngameMenu_Framerate_Title {
@@ -3226,24 +3244,6 @@ namespace Bloxstrap.Resources {
         public static string Menu_FastFlags_Presets_PingBreakdown_Title {
             get {
                 return ResourceManager.GetString("Menu.FastFlags.Presets.PingBreakdown.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select the GPU that Roblox will use for rendering. Useful if you have 2 or more GPUs on your PC..
-        /// </summary>
-        public static string Menu_FastFlags_Presets_PreferredGPU_Description {
-            get {
-                return ResourceManager.GetString("Menu.FastFlags.Presets.PreferredGPU.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preferred graphics card.
-        /// </summary>
-        public static string Menu_FastFlags_Presets_PreferredGPU_Title {
-            get {
-                return ResourceManager.GetString("Menu.FastFlags.Presets.PreferredGPU.Title", resourceCulture);
             }
         }
         

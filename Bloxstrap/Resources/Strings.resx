@@ -617,7 +617,7 @@ Do NOT use this to import large "flag lists" made by other people that promise t
     <comment>Title is Common.Help</comment>
   </data>
   <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Direct3D [exclusive fullscreen]({0}) using Alt+Enter is enabled by default.</value>
+    <value>Direct3D exclusive fullscreen using Alt+Enter is enabled by default.</value>
   </data>
   <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
     <value>Preferred escape menu version</value>
@@ -635,7 +635,7 @@ Do NOT use this to import large "flag lists" made by other people that promise t
     <value>Framerate limit</value>
   </data>
   <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>Toggled with [keyboard shortcuts]({0}). Only works if you're in the [Bloxstrap group]({1}).</value>
+    <value>Toggled with [keyboard shortcuts]({0}). Input id of a group you're in.</value>
   </data>
   <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
     <value>Enable ability to hide GUIs</value>
@@ -650,7 +650,7 @@ Do NOT use this to import large "flag lists" made by other people that promise t
     <value>Rendering mode</value>
   </data>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
-    <value>Engine Settings</value>
+    <value>FastFlags</value>
   </data>
   <data name="Menu.FontFiles" xml:space="preserve">
     <value>Font files</value>
@@ -1231,7 +1231,7 @@ Please manually delete Bloxstrap.exe from the install location or try restarting
     <value>Enable sending of analytics</value>
   </data>
   <data name="Menu.Bloxstrap.Analytics.Description" xml:space="preserve">
-    <value>It's anonymous and nothing evil, promise. For insight on what we collect and why, see our [privacy policy]({0}).</value>
+    <value>It's anonymous and nothing evil, promise. For insight on what Bloxstrap collects and why, see Bloxstrap's [privacy policy]({0}).</value>
   </data>
   <data name="Common.Analytics" xml:space="preserve">
     <value>Analytics</value>
@@ -1478,8 +1478,8 @@ Please close any applications that may be using Roblox's files, and relaunch.</v
     <value>Sends detailed ping information to the Roblox console.</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
-    <value>Launching failed due to missing client.
-		Please enable Roblox upgrades.</value>
+    <value>Upgrades were disabled with missing client.
+	To prevent issues upgrading will continue.</value>
   </data>
   <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
     <value>Player logs</value>

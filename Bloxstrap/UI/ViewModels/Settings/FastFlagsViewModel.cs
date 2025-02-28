@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using SharpDX.DXGI;
 
 using Bloxstrap.Enums.FlagPresets;
+using System.Windows;
 using Bloxstrap.UI.Elements.Settings.Pages;
 using Wpf.Ui.Mvvm.Contracts;
 using System.Windows.Documents;
