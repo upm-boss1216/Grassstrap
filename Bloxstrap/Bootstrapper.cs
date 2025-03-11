@@ -98,6 +98,8 @@ namespace Bloxstrap
         {
             App.Logger.WriteLine("Bootstrapper::SetStatus", message);
 
+            App.Logger.WriteLine("Bootstrapper::SetStatus", message);
+
             message = message.Replace("{product}", AppData.ProductName);
 
             if (Dialog is not null)
@@ -347,48 +349,36 @@ namespace Bloxstrap
             }
             catch (InvalidChannelException ex)
             {
-                // copied from v2.5.4
-                // we are keeping similar logic just updated for newer apis
-
-                // If channel does not exist
-                if (ex.StatusCode == HttpStatusCode.NotFound)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because a WindowsPlayer build does not exist for {App.Settings.Prop.Channel}");
-                }
-                // If channel is not available to the user (private/internal release channel)
-                else if (ex.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because {App.Settings.Prop.Channel} is restricted for public use.");
-
-                    // Only prompt if user has channel switching mode set to something other than Automatic.
-                    if (App.Settings.Prop.ChannelChangeMode != ChannelChangeMode.Automatic)
-                    {
-                        Frontend.ShowMessageBox(
-                            String.Format(
-                                Strings.Boostrapper_Dialog_UnauthroizedChannel,
-                                Deployment.Channel,
-                                Deployment.DefaultChannel
-                            ),
-                            MessageBoxImage.Information
-                        );
-                    }
-                }
-                else
-                {
+                if (ex.ResponseMessage.StatusCode != HttpStatusCode.NotFound)
                     throw;
-                }
 
+                App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because a build does not exist for {App.Settings.Prop.Channel}");
                 Deployment.Channel = Deployment.DefaultChannel;
-                clientVersion = await Deployment.GetInfo();
-
-                App.Settings.Prop.Channel = Deployment.DefaultChannel;
-                App.Settings.Save();
+                clientVersion = await Deployment.GetInfo(Deployment.Channel);
             }
 
             if (clientVersion.IsBehindDefaultChannel)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Resetting channel from {Deployment.Channel} because it's behind production");
+                MessageBoxResult action = App.Settings.Prop.ChannelChangeMode switch
+                {
+                    ChannelChangeMode.Prompt => Frontend.ShowMessageBox(
+                        String.Format(Strings.Bootstrapper_Dialog_ChannelOutOfDate, Deployment.Channel, Deployment.DefaultChannel),
+                        MessageBoxImage.Warning,
+                        MessageBoxButton.YesNo
+                    ),
+                    ChannelChangeMode.Automatic => MessageBoxResult.Yes,
+                    ChannelChangeMode.Ignore => MessageBoxResult.No,
+                    _ => MessageBoxResult.None
+                };
 
+                if (action == MessageBoxResult.Yes)
+                {
+                    App.Logger.WriteLine("Bootstrapper::CheckLatestVersion", $"Changed Roblox channel from {App.Settings.Prop.Channel} to {Deployment.DefaultChannel}");
+
+                    App.Settings.Prop.Channel = Deployment.DefaultChannel;
+                    clientVersion = await Deployment.GetInfo(Deployment.Channel);
+                }
+                
                 Deployment.Channel = Deployment.DefaultChannel;
                 clientVersion = await Deployment.GetInfo();
             }
@@ -403,8 +393,8 @@ namespace Bloxstrap
 
             _versionPackageManifest = new(pkgManifestData);
         }
-
-        private async void StartRoblox()
+        
+        private void StartRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
 
@@ -1388,7 +1378,7 @@ namespace Bloxstrap
 
                         _totalDownloadedBytes += bytesRead;
                         SetStatus(
-                            String.Format(App.Settings.Prop.DownloadingStringFormat,
+                            String.Format(App.Settings.Prop.DownloadingStringFormat, 
                             package.Name,
                             totalBytesRead / 1048576,
                             _versionPackageManifest.Sum(package => package.PackedSize) / 1048576

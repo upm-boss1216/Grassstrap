@@ -284,9 +284,7 @@ namespace Bloxstrap
             if (installLocation is null)
             {
                 Logger.Initialize(true);
-                AssertWindowsOSVersion();
                 Logger.WriteLine(LOG_IDENT, "Not installed, launching the installer");
-                AssertWindowsOSVersion(); // prevent new installs from unsupported operating systems
                 LaunchHandler.LaunchInstaller();
             }
             else

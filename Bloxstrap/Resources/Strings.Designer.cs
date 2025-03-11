@@ -152,6 +152,27 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fishstrap was unable to automatically update to version {0}. Please update it manually by downloading and running it from the website..
+        /// </summary>
+        public static string App_OSDeprecation_Win7_81 {
+            get {
+                return ResourceManager.GetString("App.OSDeprecation.Win7_81", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox is attempting to set your channel to {0}, however your current preferred channel is {1}.
+        ///
+        ///
+        ///Would you like to switch your preferred channel to {0}?.
+        /// </summary>
+        public static string Bootstrapper_Bootstrapper_Dialog_PromptChannelChange {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Bootstrapper.Dialog.PromptChannelChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Roblox no longer supports Windows 7 or 8.1. To continue playing Roblox, please upgrade to Windows 10 or newer..
         /// </summary>
         public static string App_OSDeprecation_Win7_81 {
@@ -161,53 +182,18 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1})..
+        ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) is out of date, and appears to no longer be receiving updates.\n
+        ///Would you like to switch to the default channel ({1})?.
         /// </summary>
-        public static string Boostrapper_Dialog_UnauthroizedChannel {
+        public static string Bootstrapper_Dialog_ChannelOutOfDate {
             get {
-                return ResourceManager.GetString("Boostrapper.Dialog.UnauthroizedChannel", resourceCulture);
+                return ResourceManager.GetString("Bootstrapper.Dialog.ChannelOutOfDate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roblox no longer supports Windows 7 or 8.1. To continue playing Roblox, please upgrade to Windows 10 or newer..
-        /// </summary>
-        public static string App_OSDeprecation_Win7_81 {
-            get {
-                return ResourceManager.GetString("App.OSDeprecation.Win7_81", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1})..
-        /// </summary>
-        public static string Boostrapper_Dialog_UnauthroizedChannel {
-            get {
-                return ResourceManager.GetString("Boostrapper.Dialog.UnauthroizedChannel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bloxstrap was unable to automatically update to version {0}. Please update it manually by downloading and running it from the website..
-        /// </summary>
-        public static string Bootstrapper_AutoUpdateFailed {
-            get {
-                return ResourceManager.GetString("Bootstrapper.AutoUpdateFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Roblox is currently running, and launching another instance will close it. Are you sure you want to continue launching?.
-        /// </summary>
-        public static string Bootstrapper_ConfirmLaunch {
-            get {
-                return ResourceManager.GetString("Bootstrapper.ConfirmLaunch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Launching failed due to missing client.
-        ///		Please enable Roblox upgrades..
+        ///   Looks up a localized string similar to Upgrades were disabled with missing client.
+        ///	To prevent issues upgrading will continue..
         /// </summary>
         public static string Bootstrapper_Dialog_NoUpgradeWithoutClient {
             get {
@@ -2518,20 +2504,65 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change deployment and installation settings for Roblox &amp; Bloxstrap..
+        ///   Looks up a localized string similar to Change automatically.
         /// </summary>
-        public static string Menu_Channel_Description {
+        public static string Menu_Channel_ChangeAction_Automatic {
             get {
-                return ResourceManager.GetString("Menu.Channel.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Automatic", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roblox upgrades.
+        ///   Looks up a localized string similar to Roblox or Fishstrap may try to change your preferred channel..
         /// </summary>
-        public static string Menu_Channel_RobloxUpgrades {
+        public static string Menu_Channel_ChangeAction_Description {
             get {
-                return ResourceManager.GetString("Menu.Channel.RobloxUpgrades", resourceCulture);
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Never change.
+        /// </summary>
+        public static string Menu_Channel_ChangeAction_Ignore {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Ignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Always prompt.
+        /// </summary>
+        public static string Menu_Channel_ChangeAction_Prompt {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic channel change action.
+        /// </summary>
+        public static string Menu_Channel_ChangeAction_Title {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change deployment and installation settings for Roblox &amp; Fishstrap..
+        /// </summary>
+        public static string Menu_Channel_Switcher_Fetching {
+            get {
+                return ResourceManager.GetString("Menu.Channel.Switcher.Fetching", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified channel either doesn&apos;t exist or is private.
+        /// </summary>
+        public static string Menu_Channel_Switcher_Unauthroized {
+            get {
+                return ResourceManager.GetString("Menu.Channel.Switcher.Unauthroized", resourceCulture);
             }
         }
         
@@ -2545,43 +2576,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fetching latest deploy info, please wait....
-        /// </summary>
-        public static string Menu_Channel_Switcher_Fetching {
-            get {
-                return ResourceManager.GetString("Menu.Channel.Switcher.Fetching", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified channel either doesn&apos;t exist or is private.
-        /// </summary>
-        public static string Menu_Channel_Switcher_Unauthroized {
-            get {
-                return ResourceManager.GetString("Menu.Channel.Switcher.Unauthroized", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fetching latest deploy info, please wait....
-        /// </summary>
-        public static string Menu_Channel_Switcher_Fetching {
-            get {
-                return ResourceManager.GetString("Menu.Channel.Switcher.Fetching", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified channel either doesn&apos;t exist or is private.
-        /// </summary>
-        public static string Menu_Channel_Switcher_Unauthroized {
-            get {
-                return ResourceManager.GetString("Menu.Channel.Switcher.Unauthroized", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Force Bloxstrap to download version from specific hash. Please do not change if you have no idea what this does..
+        ///   Looks up a localized string similar to Force Fishstrap to download version from specific hash. Please do not change if you have no idea what this does..
         /// </summary>
         public static string Menu_Channel_VersionHash_Desription {
             get {
