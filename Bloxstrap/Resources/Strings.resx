@@ -418,7 +418,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>Special Thanks</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
-    <value>An alternative bootstrapper for Roblox with a bunch of extra features.</value>
+    <value>A Bloxstrap fork.</value>
   </data>
   <data name="Menu.About.DiscordServer" xml:space="preserve">
     <value>Discord server</value>
@@ -980,7 +980,7 @@ Some text might not be translated to preferred language.</value>
   <data name="Installer.Welcome.MainText" xml:space="preserve">
     <value>Thank you for downloading Bloxstrap. 
 
-The only official websites to download Bloxstrap from are {0} and {1}, so please verify that you got it from an official source.
+The only official source to download Bloxstrap from is {0} so please verify that you got it from an official source.
 
 This installation process will be quick and simple, and you will be able to configure any of Bloxstrap's settings after installation.</value>
     <comment>{0} and {1} are URLs</comment>
@@ -1228,7 +1228,7 @@ Please manually delete Bloxstrap.exe from the install location or try restarting
     <value>Configure options related to Bloxstrap's behaviour itself.</value>
   </data>
   <data name="Menu.Bloxstrap.Analytics.Title" xml:space="preserve">
-    <value>Enable sending of analytics</value>
+    <value>Enable sending of analytics to Bloxstrap</value>
   </data>
   <data name="Menu.Bloxstrap.Analytics.Description" xml:space="preserve">
     <value>It's anonymous and nothing evil, promise. For insight on what Bloxstrap collects and why, see Bloxstrap's [privacy policy]({0}).</value>
@@ -1523,7 +1523,7 @@ Would you like to switch to the default channel ({1})?</value>
     <value>Automatic channel change action</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Description" xml:space="preserve">
-    <value>Roblox or Fishstrap may try to change your preferred channel.</value>
+    <value>Roblox or Bloxstrap may try to change your preferred channel.</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
     <value>Change automatically</value>
@@ -1553,5 +1553,17 @@ Would you like to switch your preferred channel to {0}?</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
     <value>Would you like to include preset FFlags?</value>
+  </data>
+  <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
+    <value>Roblox no longer supports Windows 7 or 8.1. To continue playing Roblox, please upgrade to Windows 10 or newer.</value>
+  </data>
+  <data name="Boostrapper.Dialog.UnauthroizedChannel" xml:space="preserve">
+	<value>The channel you're currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1}).</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Fetching" xml:space="preserve">
+	<value>Fetching latest deploy info, please wait...</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Unauthroized" xml:space="preserve">
+	<value>The specified channel either doesn't exist or is private</value>
   </data>
 </root>

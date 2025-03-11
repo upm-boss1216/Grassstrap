@@ -24,8 +24,10 @@ namespace Bloxstrap
         public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
         public const string ProjectSupportLink = "https://github.com/bloxstraplabs/bloxstrap/issues/new";
 
-        public const string RobloxPlayerAppName = "RobloxPlayerBeta";
-        public const string RobloxStudioAppName = "RobloxStudioBeta";
+        public const string RobloxPlayerAppName = "RobloxPlayerBeta.exe";
+        public const string RobloxStudioAppName = "RobloxStudioBeta.exe";
+        // one day ill add studio support
+        public const string RobloxAnselAppName = "eurotrucks2.exe";
 
         // simple shorthand for extremely frequently used and long string - this goes under HKCU
         public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{ProjectName}";
@@ -149,15 +151,28 @@ namespace Bloxstrap
 
             return null;
         }
-        public static void SendStat(string key, string value)
-        {
-            
-        }
 
         public static void SendLog()
         {
             
         }
+
+        public static void AssertWindowsOSVersion()
+        {
+            const string LOG_IDENT = "App::AssertWindowsOSVersion";
+
+            int major = Environment.OSVersion.Version.Major;
+            if (major < 10) // Windows 10 and newer only
+            {
+                Logger.WriteLine(LOG_IDENT, $"Detected unsupported Windows version ({Environment.OSVersion.Version}).");
+
+                if (!LaunchSettings.QuietFlag.Active)
+                    Frontend.ShowMessageBox(Strings.App_OSDeprecation_Win7_81, MessageBoxImage.Error);
+                
+                Terminate(ErrorCode.ERROR_INVALID_FUNCTION);
+            }
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             const string LOG_IDENT = "App::OnStartup";
@@ -190,6 +205,7 @@ namespace Bloxstrap
 #endif
             }
 
+            Logger.WriteLine(LOG_IDENT, $"OSVersion: {Environment.OSVersion}");
             Logger.WriteLine(LOG_IDENT, $"Loaded from {Paths.Process}");
             Logger.WriteLine(LOG_IDENT, $"Temp path is {Paths.Temp}");
             Logger.WriteLine(LOG_IDENT, $"WindowsStartMenu path is {Paths.WindowsStartMenu}");
@@ -268,21 +284,18 @@ namespace Bloxstrap
             if (installLocation is null)
             {
                 Logger.Initialize(true);
+                AssertWindowsOSVersion();
                 Logger.WriteLine(LOG_IDENT, "Not installed, launching the installer");
+                AssertWindowsOSVersion(); // prevent new installs from unsupported operating systems
                 LaunchHandler.LaunchInstaller();
             }
             else
             {
                 Paths.Initialize(installLocation);
 
-                Logger.WriteLine(LOG_IDENT, "Entering main logic");
-
                 // ensure executable is in the install directory
                 if (Paths.Process != Paths.Application && !File.Exists(Paths.Application))
-                {
-                    Logger.WriteLine(LOG_IDENT, "Copying to install directory");
                     File.Copy(Paths.Process, Paths.Application);
-                }
 
                 Logger.Initialize(LaunchSettings.UninstallFlag.Active);
 
@@ -314,7 +327,6 @@ namespace Bloxstrap
             }
 
             // you must *explicitly* call terminate when everything is done, it won't be called implicitly
-            Logger.WriteLine(LOG_IDENT, "Startup finished");
         }
     }
 }

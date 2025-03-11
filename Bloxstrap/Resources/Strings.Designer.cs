@@ -152,11 +152,41 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Roblox no longer supports Windows 7 or 8.1. To continue playing Roblox, please upgrade to Windows 10 or newer..
+        /// </summary>
+        public static string App_OSDeprecation_Win7_81 {
+            get {
+                return ResourceManager.GetString("App.OSDeprecation.Win7_81", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1})..
+        /// </summary>
+        public static string Boostrapper_Dialog_UnauthroizedChannel {
+            get {
+                return ResourceManager.GetString("Boostrapper.Dialog.UnauthroizedChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bloxstrap was unable to automatically update to version {0}. Please update it manually by downloading and running it from the website..
         /// </summary>
         public static string Bootstrapper_AutoUpdateFailed {
             get {
                 return ResourceManager.GetString("Bootstrapper.AutoUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox is attempting to set your channel to {0}, however your current preferred channel is {1}.
+        ///
+        ///
+        ///Would you like to switch your preferred channel to {0}?.
+        /// </summary>
+        public static string Bootstrapper_Bootstrapper_Dialog_PromptChannelChange {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Bootstrapper.Dialog.PromptChannelChange", resourceCulture);
             }
         }
         
@@ -170,8 +200,18 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Launching failed due to missing client.
-        ///		Please enable Roblox upgrades..
+        ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) is out of date, and appears to no longer be receiving updates.\n
+        ///Would you like to switch to the default channel ({1})?.
+        /// </summary>
+        public static string Bootstrapper_Dialog_ChannelOutOfDate {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Dialog.ChannelOutOfDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrades were disabled with missing client.
+        ///	To prevent issues upgrading will continue..
         /// </summary>
         public static string Bootstrapper_Dialog_NoUpgradeWithoutClient {
             get {
@@ -1813,7 +1853,7 @@ namespace Bloxstrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Thank you for downloading Bloxstrap. 
         ///
-        ///The only official websites to download Bloxstrap from are {0} and {1}, so please verify that you got it from an official source.
+        ///The only official source to download Bloxstrap from is {0} so please verify that you got it from an official source.
         ///
         ///This installation process will be quick and simple, and you will be able to configure any of Bloxstrap&apos;s settings after installation..
         /// </summary>
@@ -1977,7 +2017,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An alternative bootstrapper for Roblox with a bunch of extra features..
+        ///   Looks up a localized string similar to A Bloxstrap fork..
         /// </summary>
         public static string Menu_About_Description {
             get {
@@ -2419,7 +2459,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to It&apos;s anonymous and nothing evil, promise. For insight on what we collect and why, see our [privacy policy]({0})..
+        ///   Looks up a localized string similar to It&apos;s anonymous and nothing evil, promise. For insight on what Bloxstrap collects and why, see Bloxstrap&apos;s [privacy policy]({0})..
         /// </summary>
         public static string Menu_Bloxstrap_Analytics_Description {
             get {
@@ -2428,7 +2468,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable sending of analytics.
+        ///   Looks up a localized string similar to Enable sending of analytics to Bloxstrap.
         /// </summary>
         public static string Menu_Bloxstrap_Analytics_Title {
             get {
@@ -2482,6 +2522,51 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change automatically.
+        /// </summary>
+        public static string Menu_Channel_ChangeAction_Automatic {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Automatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox or Bloxstrap may try to change your preferred channel..
+        /// </summary>
+        public static string Menu_Channel_ChangeAction_Description {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Never change.
+        /// </summary>
+        public static string Menu_Channel_ChangeAction_Ignore {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Ignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Always prompt.
+        /// </summary>
+        public static string Menu_Channel_ChangeAction_Prompt {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic channel change action.
+        /// </summary>
+        public static string Menu_Channel_ChangeAction_Title {
+            get {
+                return ResourceManager.GetString("Menu.Channel.ChangeAction.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change deployment and installation settings for Roblox &amp; Bloxstrap..
         /// </summary>
         public static string Menu_Channel_Description {
@@ -2505,6 +2590,24 @@ namespace Bloxstrap.Resources {
         public static string Menu_Channel_RobloxUpgrades_Description {
             get {
                 return ResourceManager.GetString("Menu.Channel.RobloxUpgrades.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fetching latest deploy info, please wait....
+        /// </summary>
+        public static string Menu_Channel_Switcher_Fetching {
+            get {
+                return ResourceManager.GetString("Menu.Channel.Switcher.Fetching", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified channel either doesn&apos;t exist or is private.
+        /// </summary>
+        public static string Menu_Channel_Switcher_Unauthroized {
+            get {
+                return ResourceManager.GetString("Menu.Channel.Switcher.Unauthroized", resourceCulture);
             }
         }
         
@@ -2816,6 +2919,17 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Going above 240 FPS is not recommended, as this change may cause issues and worsen performance.
+        ///
+        ///[Click to learn more]({0}).
+        /// </summary>
+        public static string Menu_FastFlags_240FPSWarning {
+            get {
+                return ResourceManager.GetString("Menu.FastFlags.240FPSWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Control how specific Roblox engine parameters and features are configured..
         /// </summary>
         public static string Menu_FastFlags_Description {
@@ -3050,7 +3164,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Toggled with [keyboard shortcuts]({0}). Only works if you&apos;re in the [Bloxstrap group]({1})..
+        ///   Looks up a localized string similar to Toggled with [keyboard shortcuts]({0}). Input id of a group you&apos;re in..
         /// </summary>
         public static string Menu_FastFlags_Presets_HideGuis_Description {
             get {

@@ -24,6 +24,8 @@ using Bloxstrap.RobloxInterfaces;
 using Bloxstrap.UI.Elements.Bootstrapper.Base;
 
 using ICSharpCode.SharpZipLib.Zip;
+using System.Threading.Channels;
+using System.Windows.Controls;
 
 namespace Bloxstrap
 {
@@ -59,14 +61,16 @@ namespace Bloxstrap
         private double _taskbarProgressMaximum;
         private long _totalDownloadedBytes = 0;
 
-        private bool _mustUpgrade => String.IsNullOrEmpty(AppData.State.VersionGuid) || !File.Exists(AppData.ExecutablePath);
+        private bool _mustUpgrade =>
+            String.IsNullOrEmpty(AppData.State.VersionGuid) ||
+            !File.Exists(AppData.ExecutablePath) ||
+            !AppData.ExecutablePath.Contains(":\\"); // fix standalone eurotrucks2.exe bug
+
         private bool _noConnection = false;
 
         private AsyncMutex? _mutex;
 
         private int _appPid = 0;
-
-        private int totalPackageSize = 0;
 
         public IBootstrapperDialog? Dialog = null;
 
@@ -90,8 +94,6 @@ namespace Bloxstrap
 
         private void SetStatus(string message)
         {
-            App.Logger.WriteLine("Bootstrapper::SetStatus", message);
-
             message = message.Replace("{product}", AppData.ProductName);
 
             if (Dialog is not null)
@@ -143,8 +145,8 @@ namespace Bloxstrap
                 message += $"\n\n{Strings.Dialog_Connectivity_RobloxUpgradeSkip}";
 
             Frontend.ShowConnectivityDialog(
-                String.Format(Strings.Dialog_Connectivity_UnableToConnect, "Roblox"), 
-                message, 
+                String.Format(Strings.Dialog_Connectivity_UnableToConnect, "Roblox"),
+                message,
                 _mustUpgrade ? MessageBoxImage.Error : MessageBoxImage.Warning,
                 exception);
 
@@ -274,13 +276,55 @@ namespace Bloxstrap
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant
             );
 
-            if (match.Groups.Count == 2)
+            // CHANNEL CHANGE MODE
+
+            void EnrollChannel()
             {
-                Deployment.Channel = match.Groups[1].Value.ToLowerInvariant();
+                if (match.Groups.Count == 2)
+                {
+                    Deployment.Channel = match.Groups[1].Value.ToLowerInvariant();
+                }
+                else if (key.GetValue("www.roblox.com") is string value && !String.IsNullOrEmpty(value))
+                {
+                    Deployment.Channel = value.ToLowerInvariant();
+                }
             }
-            else if (key.GetValue("www.roblox.com") is string value && !String.IsNullOrEmpty(value))
+
+            switch (App.Settings.Prop.ChannelChangeMode)
             {
-                Deployment.Channel = value.ToLowerInvariant();
+                case ChannelChangeMode.Automatic:
+                    App.Logger.WriteLine(LOG_IDENT, "Enrolling into channel");
+
+                    EnrollChannel();
+                    break;
+                case ChannelChangeMode.Prompt:
+                    App.Logger.WriteLine(LOG_IDENT, "Prompting channel enrollment");
+
+                    if (
+                        (!match.Success || match.Groups.Count != 2)
+                        &&
+                        match.Groups[2].Value != App.Settings.Prop.Channel
+                        )
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Channel is either equal or incorrectly formatted");
+                        break;
+                    }
+
+                    string DisplayChannel = !String.IsNullOrEmpty(match.Groups[1].Value) ? match.Groups[1].Value : Deployment.DefaultChannel;
+
+                    var Result = Frontend.ShowMessageBox(
+                    String.Format(Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange,
+                    DisplayChannel, App.Settings.Prop.Channel),
+                    MessageBoxImage.Question,
+                    MessageBoxButton.YesNo
+                    );
+
+                    if (Result == MessageBoxResult.Yes)
+                        EnrollChannel();
+                    break;
+                case ChannelChangeMode.Ignore:
+                    App.Logger.WriteLine(LOG_IDENT, "Ignoring channel enrollment");
+                    break;
             }
 
             if (String.IsNullOrEmpty(Deployment.Channel))
@@ -288,26 +332,73 @@ namespace Bloxstrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Got channel as {Deployment.DefaultChannel}");
 
-            if (!Deployment.IsDefaultChannel)
-                App.SendStat("robloxChannel", Deployment.Channel);
-
             ClientVersion clientVersion;
 
             try
             {
-                clientVersion = await Deployment.GetInfo();
+                clientVersion = await Deployment.GetInfo(Deployment.Channel);
             }
             catch (InvalidChannelException ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Resetting channel from {Deployment.Channel} because {ex.StatusCode}");
+                // copied from v2.5.4
+                // we are keeping similar logic just updated for newer apis
+
+                // If channel does not exist
+                if (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because a WindowsPlayer build does not exist for {App.Settings.Prop.Channel}");
+                }
+                // If channel is not available to the user (private/internal release channel)
+                else if (ex.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because {App.Settings.Prop.Channel} is restricted for public use.");
+
+                    // Only prompt if user has channel switching mode set to something other than Automatic.
+                    if (App.Settings.Prop.ChannelChangeMode != ChannelChangeMode.Automatic)
+                    {
+                        Frontend.ShowMessageBox(
+                            String.Format(
+                                Strings.Boostrapper_Dialog_UnauthroizedChannel,
+                                Deployment.Channel,
+                                Deployment.DefaultChannel
+                            ),
+                            MessageBoxImage.Information
+                        );
+                    }
+                }
+                else
+                {
+                    throw;
+                }
 
                 Deployment.Channel = Deployment.DefaultChannel;
-                clientVersion = await Deployment.GetInfo();
+                clientVersion = await Deployment.GetInfo(Deployment.Channel);
+
+                App.Settings.Prop.Channel = Deployment.DefaultChannel;
+                App.Settings.Save();
             }
 
             if (clientVersion.IsBehindDefaultChannel)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Resetting channel from {Deployment.Channel} because it's behind production");
+                MessageBoxResult action = App.Settings.Prop.ChannelChangeMode switch
+                {
+                    ChannelChangeMode.Prompt => Frontend.ShowMessageBox(
+                        String.Format(Strings.Bootstrapper_Dialog_ChannelOutOfDate, Deployment.Channel, Deployment.DefaultChannel),
+                        MessageBoxImage.Warning,
+                        MessageBoxButton.YesNo
+                    ),
+                    ChannelChangeMode.Automatic => MessageBoxResult.Yes,
+                    ChannelChangeMode.Ignore => MessageBoxResult.No,
+                    _ => MessageBoxResult.None
+                };
+
+                if (action == MessageBoxResult.Yes)
+                {
+                    App.Logger.WriteLine("Bootstrapper::CheckLatestVersion", $"Changed Roblox channel from {App.Settings.Prop.Channel} to {Deployment.DefaultChannel}");
+
+                    App.Settings.Prop.Channel = Deployment.DefaultChannel;
+                    clientVersion = await Deployment.GetInfo(Deployment.Channel);
+                }
 
                 Deployment.Channel = Deployment.DefaultChannel;
                 clientVersion = await Deployment.GetInfo();
@@ -324,7 +415,7 @@ namespace Bloxstrap
             _versionPackageManifest = new(pkgManifestData);
         }
 
-        private void StartRoblox()
+        private async void StartRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
 
@@ -336,14 +427,31 @@ namespace Bloxstrap
 
                 if (match.Groups.Count == 2)
                     _launchCommandLine = _launchCommandLine.Replace(
-                        "robloxLocale:en_us", 
-                        $"robloxLocale:{match.Groups[1].Value}", 
+                        "robloxLocale:en_us",
+                        $"robloxLocale:{match.Groups[1].Value}",
                         StringComparison.OrdinalIgnoreCase);
+            }
+
+            string[] Names = { App.RobloxPlayerAppName, App.RobloxAnselAppName, App.RobloxStudioAppName };
+            string ResolvedName = null!;
+
+            foreach (string Name in Names)
+            {
+                string Directory = Path.Combine((string)AppData.Directory, Name);
+                if (File.Exists(Directory))
+                {
+                    ResolvedName = Name;
+                }
+            }
+
+            if (String.IsNullOrEmpty(ResolvedName))
+            {
+                await UpgradeRoblox();
             }
 
             var startInfo = new ProcessStartInfo()
             {
-                FileName = AppData.ExecutablePath,
+                FileName = Path.Combine(AppData.Directory, ResolvedName),
                 Arguments = _launchCommandLine,
                 WorkingDirectory = AppData.Directory
             };
@@ -410,7 +518,7 @@ namespace Bloxstrap
             if (String.IsNullOrEmpty(logFileName))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Unable to identify log file");
-               // Frontend.ShowPlayerErrorDialog();
+                // Frontend.ShowPlayerErrorDialog();
                 return;
             }
             else
@@ -458,10 +566,10 @@ namespace Bloxstrap
             {
                 using var ipl = new InterProcessLock("Watcher", TimeSpan.FromSeconds(5));
 
-                var watcherData = new WatcherData 
-                { 
-                    ProcessId = _appPid, 
-                    LogFile = logFileName, 
+                var watcherData = new WatcherData
+                {
+                    ProcessId = _appPid,
+                    LogFile = logFileName,
                     AutoclosePids = autoclosePids
                 };
 
@@ -472,7 +580,7 @@ namespace Bloxstrap
                 if (App.LaunchSettings.TestModeFlag.Active)
                     args += " -testmode";
 
-                if (ipl.IsAcquired||true)
+                if (ipl.IsAcquired || true)
                     Process.Start(Paths.Process, args);
             }
 
@@ -540,7 +648,7 @@ namespace Bloxstrap
 
             App.SoftTerminate(ErrorCode.ERROR_CANCELLED);
         }
-#endregion
+        #endregion
 
         #region App Install
         private async Task<bool> CheckForUpdates()
@@ -730,10 +838,9 @@ namespace Bloxstrap
                 Thread.Sleep(2000);
             }
 
-            if (CancelUpgrade && !Directory.Exists(_latestVersionDirectory) && false)
+            if (CancelUpgrade && !Directory.Exists(_latestVersionDirectory))
             {
-                Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Error, MessageBoxButton.OK);
-                App.Terminate();
+                Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
             }
             else if (CancelUpgrade)
             {
@@ -807,14 +914,6 @@ namespace Bloxstrap
             }
 
             var extractionTasks = new List<Task>();
-
-            foreach (var package in _versionPackageManifest)
-            {
-                if (package.Name == "WebView2RuntimeInstaller.zip")
-                    continue;
-
-                totalPackageSize += package.Size;
-            }
 
             foreach (var package in _versionPackageManifest)
             {
@@ -954,6 +1053,38 @@ namespace Bloxstrap
             App.Logger.WriteLine(LOG_IDENT, $"Registered as {totalSize} KB");
 
             App.State.Save();
+
+            App.Logger.WriteLine(LOG_IDENT, "Checking for eurotrucks2.exe toggle");
+
+            try
+            {
+                string[] Names = { App.RobloxPlayerAppName, App.RobloxAnselAppName, App.RobloxStudioAppName };
+                string ExecutableName = null!;
+
+                if (!App.Settings.Prop.RenameClientToEuroTrucks2)
+                    return;
+
+                foreach (string Name in Names)
+                {
+                    string Directory = Path.Combine((string)AppData.Directory, Name);
+                    if (File.Exists(Directory))
+                    {
+                        ExecutableName = Name;
+                    }
+                }
+
+                if (ExecutableName == App.RobloxPlayerAppName || ExecutableName == App.RobloxStudioAppName)
+                {
+                    File.Move(
+                        Path.Combine(_latestVersionDirectory, ExecutableName),
+                        Path.Combine(_latestVersionDirectory, App.RobloxAnselAppName)
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to update client! " + ex.Message);
+            }
 
             _isInstalling = false;
         }
@@ -1139,34 +1270,6 @@ namespace Bloxstrap
             App.State.Prop.ModManifest = modFolderFiles;
             App.State.Save();
 
-            App.Logger.WriteLine(LOG_IDENT,"Checking for eurotrucks2.exe toggle");
-
-            try
-            {
-                bool isEuroTrucks = File.Exists(Path.Combine(_latestVersionDirectory, "eurotrucks2.exe")) ? true : false;
-
-                if (App.Settings.Prop.RenameClientToEuroTrucks2)
-                {
-                    if (!isEuroTrucks)
-                        File.Move(
-                            Path.Combine(_latestVersionDirectory, "RobloxPlayerBeta.exe"),
-                            Path.Combine(_latestVersionDirectory, "eurotrucks2.exe")
-                        );
-                }
-                else
-                {
-                    if (isEuroTrucks)
-                        File.Move(
-                            Path.Combine(_latestVersionDirectory, "eurotrucks2.exe"),
-                            Path.Combine(_latestVersionDirectory, "RobloxPlayerBeta.exe")
-                        );
-                }
-            } 
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to update client! " + ex.Message);
-            }
-
             App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
         }
 
@@ -1259,10 +1362,10 @@ namespace Bloxstrap
 
                         _totalDownloadedBytes += bytesRead;
                         SetStatus(
-                            String.Format(App.Settings.Prop.DownloadingStringFormat, 
-                            package.Name, 
-                            _totalDownloadedBytes / 1048576,
-                            totalPackageSize / 1048576
+                            String.Format(App.Settings.Prop.DownloadingStringFormat,
+                            package.Name,
+                            totalBytesRead / 1048576,
+                            _versionPackageManifest.Sum(package => package.PackedSize) / 1048576
                             ));
                         UpdateProgressBar();
                     }
@@ -1282,8 +1385,6 @@ namespace Bloxstrap
 
                     if (ex.GetType() == typeof(ChecksumFailedException))
                     {
-                        App.SendStat("packageDownloadState", "httpFail");
-
                         Frontend.ShowConnectivityDialog(
                             Strings.Dialog_Connectivity_UnableToDownload,
                             String.Format(Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox](https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox)"),
