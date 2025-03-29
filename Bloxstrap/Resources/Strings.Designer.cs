@@ -163,7 +163,7 @@ namespace Bloxstrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) has now been restricted from public use. You will now be on the default channel ({1})..
         /// </summary>
-        public static string Boostrapper_Dialog_UnauthroizedChannel {
+        public static string Boostrapper_Dialog_UnauthorizedChannel {
             get {
                 return ResourceManager.GetString("Boostrapper.Dialog.UnauthorizedChannel", resourceCulture);
             }
