@@ -47,9 +47,9 @@
         </Grid>
 
         <WrapPanel HorizontalAlignment="Center" Orientation="Horizontal">
-            <ui:Anchor Margin="0,0,8,8" Content="{x:Static resources:Strings.Menu_About_GithubRepository}" Icon="Code24" NavigateUri="https://github.com/returnrqt/bloxstrap" />
+            <ui:Anchor Margin="0,0,8,8" Content="{x:Static resources:Strings.Menu_About_GithubRepository}" Icon="Code24" NavigateUri="https://github.com/returnrqt/fishstrap" />
             <ui:Anchor Margin="0,0,8,8" Content="{x:Static resources:Strings.Menu_About_HelpInformation}" Icon="BookQuestionMark24" NavigateUri="https://github.com/bloxstraplabs/bloxstrap/wiki" />
-            <ui:Anchor Margin="0,0,8,8" Content="{x:Static resources:Strings.Menu_About_ReportIssue}" Icon="BookExclamationMark24" NavigateUri="https://github.com/returnrqt/bloxstrap/issues" />
+            <ui:Anchor Margin="0,0,8,8" Content="{x:Static resources:Strings.Menu_About_ReportIssue}" Icon="BookExclamationMark24" NavigateUri="https://github.com/returnrqt/fishstrap/issues" />
             <ui:Anchor Margin="0,0,0,8" Content="{x:Static resources:Strings.Menu_About_DiscordServer}" Icon="Chat48" NavigateUri="https://discord.gg/xSsamjAU84" />
         </WrapPanel>
 
@@ -123,7 +123,9 @@
                 <StackPanel>
                     <controls:MarkdownTextBlock MarkdownText="[kezcn](https://www.roblox.com/users/4401881748/profile)" />
                     <controls:MarkdownTextBlock MarkdownText="[bloodraven](https://github.com/bloodrvn)" />
-                    <controls:MarkdownTextBlock MarkdownText="[lachine](https://github.com/lachine1)" />
+                    <controls:MarkdownTextBlock MarkdownText="[Skylan](https://github.com/Skylan031/)" />
+                    <controls:MarkdownTextBlock MarkdownText="[cam1494](https://github.com/cam1494)" />
+                    <controls:MarkdownTextBlock MarkdownText="[Encythe](https://github.com/Encythe)" />
                     <controls:MarkdownTextBlock MarkdownText="[he3als](https://github.com/he3als)" />
                     <controls:MarkdownTextBlock MarkdownText="[NikSavchenk0](https://github.com/NikSavchenk0)" />
                     <controls:MarkdownTextBlock MarkdownText="[carter0nline](https://github.com/carter0nline)" />
@@ -163,6 +165,7 @@
                     <controls:MarkdownTextBlock MarkdownText="[axellse](https://github.com/axellse)" />
                     <controls:MarkdownTextBlock MarkdownText="[NetSoftworks](https://github.com/netsoftwork)" />
                     <controls:MarkdownTextBlock MarkdownText="[BlueOutside](https://github.com/BlueOutside)" />
+                    <controls:MarkdownTextBlock MarkdownText="[Naveandice](https://github.com/Naveandice)" />
                 </StackPanel>
             </controls:Expander>
         </Grid>
