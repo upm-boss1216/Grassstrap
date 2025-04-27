@@ -180,7 +180,6 @@ namespace Bloxstrap.Integrations
 
             MoveWindow(_currentWindow,_startingX,_startingY,_startingWidth,_startingHeight,false);
             SetWindowLong(_currentWindow, -20, 0x00000000);
-            ShowWindow(_currentWindow, SW_MAXIMIZE);
 
                 changedWindow = false;
             }
