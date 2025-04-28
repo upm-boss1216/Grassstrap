@@ -252,7 +252,6 @@ namespace Bloxstrap.Integrations
 
             string status = _activityWatcher.Data.ServerType switch
             {
-                ServerType.Public => "อยู่ในเซิร์ฟเวอร์สาธารณะ",
                 ServerType.Private => "อยู่ในเซิร์ฟเวอร์ส่วนตัว",
                 ServerType.Reserved => "อยู่ในเซิร์ฟเวอร์ Reserved",
                 _ => $"by {universeDetails.Data.Creator.Name}" + (universeDetails.Data.Creator.HasVerifiedBadge ? " ☑️" : ""),
