@@ -252,8 +252,9 @@ namespace Bloxstrap.Integrations
 
             string status = _activityWatcher.Data.ServerType switch
             {
-                ServerType.Private => "In a private server",
-                ServerType.Reserved => "In a reserved server",
+                ServerType.Public => "อยู่ในเซิร์ฟเวอร์สาธารณะ",
+                ServerType.Private => "อยู่ในเซิร์ฟเวอร์ส่วนตัว",
+                ServerType.Reserved => "อยู่ในเซิร์ฟเวอร์ Reserved",
                 _ => $"by {universeDetails.Data.Creator.Name}" + (universeDetails.Data.Creator.HasVerifiedBadge ? " ☑️" : ""),
             };
 
@@ -310,7 +311,7 @@ namespace Bloxstrap.Integrations
                 {
                     buttons.Add(new Button
                     {
-                        Label = "Join server",
+                        Label = "เข้าร่วมเซิร์ฟเวอร์",
                         Url = data.GetInviteDeeplink()
                     });
                 }
@@ -318,7 +319,7 @@ namespace Bloxstrap.Integrations
 
             buttons.Add(new Button
             {
-                Label = "See game page",
+                Label = "ดูหน้าเว็บไซต์เกม",
                 Url = $"https://www.roblox.com/games/{data.PlaceId}"
             });
 

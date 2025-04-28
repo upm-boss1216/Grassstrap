@@ -19,7 +19,7 @@ namespace Bloxstrap
         public const string ProjectName = "Bloxstrap";
 #endif
         public const string ProjectOwner = "Bloxstrap";
-        public const string ProjectRepository = "upm-boss1216/thaistrap";
+        public const string ProjectRepository = "upm-boss1216/grassstrap";
         public const string ProjectDownloadLink = "https://bloxstraplabs.com";
         public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
         public const string ProjectSupportLink = "https://github.com/bloxstraplabs/bloxstrap/issues/new";
